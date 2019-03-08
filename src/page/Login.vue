@@ -7,7 +7,7 @@
     <el-input  v-model="formData.uname" autocomplete="off"></el-input>
   </el-form-item>
   <el-form-item label="密码" >
-    <el-input type="upwd" v-model="formData.upwd" autocomplete="off"></el-input>
+    <el-input type="password" v-model="formData.upwd" autocomplete="off"></el-input>
   </el-form-item>
   <el-form-item class="btn">
     <el-button type="primary" @click="submitForm('formData')">提交</el-button>
@@ -36,7 +36,9 @@
         this.$axios({
           url:"/admin/account/login",
           method:"POST",
-          data:this.formData
+          data:this.formData,
+          // 处理跨域
+            withCredentials: true,
         }).then(res=>{
           // console.log(res);
           const {status,message}=res.data;

@@ -7,7 +7,8 @@
           <div class="logo"></div>
 
           <!-- 菜单栏 -->
-          <app-aside :isCollapse="isCollapse"></app-aside>
+           <app-aside :isCollapse="isCollapse"></app-aside>
+            
       </el-aside>
 
       <!-- 右侧内容区域 -->

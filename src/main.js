@@ -18,8 +18,11 @@ import Admin from "./page/Admin"
 
 import GoodsList from "./page/goods/GoodsList"
 import GoodsAdd from "./page/goods/GoodsAdd"
+import GoodsEdit from "./page/goods/GoodsEdit"
 
 import CategoryList from "./page/category/CategoryList"
+
+
 
 //富文本编辑器(全局的)
 // import VueQuillEditor from 'vue-quill-editor'
@@ -49,7 +52,8 @@ const routes =[
   redirect:"/admin/goods-list",
   children:[
     { path: "goods-list", component: GoodsList, meta: "商品列表" },
-    {path:"goods-add",component:GoodsAdd,meta:"添加商品"},
+    { path: "goods-add", component: GoodsAdd, meta: "添加商品" },
+    {path:"goods-edit/:id",component:GoodsEdit,meta:"编辑商品"},
 
     { path: "cacategory-list", component: CategoryList,meta:"商品栏目"},
   ]}

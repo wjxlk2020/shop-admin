@@ -4,18 +4,6 @@
 
       <el-select v-model="form.category_id" placeholder="请选择活动区域">
 
-        <!-- label是分组的标题 -->
-        <!-- <el-option-group v-for="(item, index) in categorys" :key="index" :label="item.title">
-          <el-option
-            v-for="(subItem, subIndex) in item.group"
-            :key="subIndex"
-            :label="subItem.title"
-            :value="subItem.category_id"
-          ></el-option>
-        </el-option-group> -->
-
-        <!-- 这种写法很脆弱，不是任何情况下都适合，比如后台修改了数据的category_id的排序，这种循环就不能使用  -->
-        <!-- 虽然可以手动排序，但是还是不会出第三级 -->
         <el-option-group v-for="(item, index) in categorys" 
         v-if="item.parent_id === 0"
         :key="index" 
@@ -24,7 +12,7 @@
             v-for="(subItem, subIndex) in categorys"
             v-if="subItem.parent_id == item.category_id"
             :key="subIndex"
-            :label="subItem.title"
+            :label="`${subItem.category_id} ${subItem.title}`"
             :value="subItem.category_id"
           ></el-option>
         </el-option-group>
@@ -55,12 +43,14 @@
 
     <el-form-item label="封面图片">
       <!-- 单张图片上传 -->
+        <!-- file-list初始化上传组件的内容 -->
       <el-upload
         class="avatar-uploader"
         action="http://localhost:8899/admin/article/uploadimg"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload"
+        :file-list="form.imgList"
       >
         <img v-if="imageUrl" :src="imageUrl" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -84,12 +74,14 @@
     </el-form-item>
 
     <el-form-item label="图片相册">
+       <!-- file-list初始化上传组件的内容 -->
       <el-upload
         action="http://localhost:8899/admin/article/uploadimg"
         list-type="picture-card"
         :on-preview="handlePictureCardPreview"
         :on-remove="handleRemove"
         :on-success="handleFileList"
+        :file-list="form.fileList"
       >
         <i class="el-icon-plus"></i>
       </el-upload>
@@ -109,8 +101,8 @@
     </el-form-item>
 
     <el-form-item>
-      <el-button type="primary" @click="onSubmit">立即创建</el-button>
-      <el-button>取消</el-button>
+      <el-button type="primary" @click="onSubmit">保存</el-button>
+      <el-button @click="$router.back()">取消</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -158,6 +150,9 @@ export default {
       dialogVisible: false,
       // 类别数据
       categorys: [],
+
+      //商品id
+      id:""
     };
   },
 
@@ -167,6 +162,27 @@ export default {
   },
 
   mounted(){
+    //获取动态路由id
+    const {id}=this.$route.params;
+
+    //保存到data
+    this.id=id;
+
+    //请求商品数据
+    this.$axios({
+      url:`/admin/goods/getgoodsmodel/${id}`
+    }).then(res=>{
+      const {message}=res.data;
+      //初始化表单的值
+      this.form=message;
+
+      //预览图片
+      this.imageUrl=message.imgList[0].url;
+    })
+
+
+
+
       // 请求分类的数据
       this.$axios({
           method: "GET",
@@ -176,29 +192,7 @@ export default {
 
             this.categorys = message;
 
-            // 2.*************************************
-            // 思考： 为什么没有渲染出夏装 #17条
-
-            // 最终保存的结果数组
-            // let options = [];
-
-            // message.forEach(v => {
-            //     // 当前类别是顶级类别时候
-            //     if(v.parent_id == 0){
-            //         v.group = [];
-            //         options.push(v)
-            //     }else{
-            //         // 子类别判断
-            //         options.forEach(item => {
-            //             // 如果成立的话当前类别就是options其中一个顶级类别子选项
-            //             if(item.category_id == v.parent_id){
-            //                 item.group.push(v);
-            //             }
-            //         })
-            //     }
-            // })
-            
-            // this.categorys = options;
+          
       })
 
   },
@@ -209,7 +203,7 @@ export default {
       
         this.$axios({
             method: "POST",
-            url: "/admin/goods/add/goods",
+            url: `/admin/goods/edit/${this.id}`,
             data: this.form,
             // 处理跨域
             withCredentials: true,
