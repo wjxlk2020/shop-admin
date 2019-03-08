@@ -34,9 +34,11 @@
   </div>
 </template>
 
+
+
 <script>
 export default {
-   data() {
+  data() {
     return {
       data: [
          
@@ -109,19 +111,18 @@ export default {
     edit(data) {
       console.log();
     },
-    //修改排序触发事件
-    handleEnter(data){
-      //修改排序
+
+    // 修改排序回车时候触发的事件
+    handleEnter(data) {
+      // 修改排序
       this.$axios({
-        method:"POST",
-        url:`/admin/category/edit/${data.category_id}`,
+        method: "POST",
+        url: `/admin/category/edit/${data.category_id}`,
         data,
         // 处理跨域
         withCredentials: true
-      }).then(res=>{
+      }).then(res => {
         const { status, message } = res.data;
-        console.log(res);
-        
         if (status == 0) {
           this.$message({
             type: "success",
@@ -131,9 +132,9 @@ export default {
       });
     },
 
-    //跳转到新增栏目页
+    // 跳转到新增栏目页
     handleCategoryAdd(){
-      this.$router.push("/admin/category-add");
+        this.$router.push("/admin/category-add");
     }
   }
 };
@@ -148,15 +149,15 @@ export default {
   font-size: 14px;
   padding-right: 8px;
 }
-.tree-header{
-  background-color: #fff;
-  padding: 10px;
-}
-.category .el-input--mini .el-input__inner{
+
+.category .el-input--mini .el-input__inner {
   width: 80px;
-  height: 18px ;
-  line-height: 18px ;
-  
+  height: 18px !important;
+  line-height: 18px !important;
 }
 
+.tree-header {
+  background: #fff;
+  padding: 10px;
+}
 </style>

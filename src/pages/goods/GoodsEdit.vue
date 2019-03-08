@@ -3,7 +3,8 @@
     <el-form-item label="所属类别">
 
       <el-select v-model="form.category_id" placeholder="请选择活动区域">
-
+      <!-- <el-select value="手机数码" placeholder="请选择活动区域"> -->
+        
         <el-option-group v-for="(item, index) in categorys" 
         v-if="item.parent_id === 0"
         :key="index" 
@@ -43,7 +44,7 @@
 
     <el-form-item label="封面图片">
       <!-- 单张图片上传 -->
-        <!-- file-list初始化上传组件的内容 -->
+      <!-- file-list初始化上传组件的内容 -->
       <el-upload
         class="avatar-uploader"
         action="http://localhost:8899/admin/article/uploadimg"
@@ -74,7 +75,7 @@
     </el-form-item>
 
     <el-form-item label="图片相册">
-       <!-- file-list初始化上传组件的内容 -->
+      <!-- file-list初始化上传组件的内容 -->
       <el-upload
         action="http://localhost:8899/admin/article/uploadimg"
         list-type="picture-card"
@@ -151,8 +152,8 @@ export default {
       // 类别数据
       categorys: [],
 
-      //商品id
-      id:""
+      // 商品id
+      id: ""
     };
   },
 
@@ -162,35 +163,33 @@ export default {
   },
 
   mounted(){
-    //获取动态路由id
-    const {id}=this.$route.params;
 
-    //保存到data
-    this.id=id;
+      // 获取动态路由id
+      const {id} = this.$route.params;
 
-    //请求商品数据
-    this.$axios({
-      url:`/admin/goods/getgoodsmodel/${id}`
-    }).then(res=>{
-      const {message}=res.data;
-      //初始化表单的值
-      this.form=message;
+      // 保存到data
+      this.id = id;
 
-      //预览图片
-      this.imageUrl=message.imgList[0].url;
+      // 请求商品数据
+      this.$axios({
+        url: `/admin/goods/getgoodsmodel/${id}`
+      }).then(res => {
+        const {message} = res.data;
+        // 初始化表单的值
+        this.form = message;
 
-      this.from.fileList=message.fileList.map(v=>{
-        return {
-          ...v,
-          //覆盖v对象里面的url
-          // shorturl:`http://localhost:8899${v.shorturl}`
-          url:`http://localhost:8899`+v.shorturl
-        }
+        // 预览图片
+        this.imageUrl = message.imgList[0].url;
+
+        this.form.fileList = message.fileList.map(v => {
+          return {
+            ...v,
+            // 覆盖 v 对象里面的url
+            url: `http://localhost:8899` + v.shorturl
+          }
+        })
+
       })
-    })
-
-
-
 
       // 请求分类的数据
       this.$axios({
@@ -200,8 +199,6 @@ export default {
             const {message} = res.data;
 
             this.categorys = message;
-
-          
       })
 
   },
@@ -226,7 +223,7 @@ export default {
                 });
 
                 setTimeout(() => {
-                    this.$router.replace("/admin/goods-list")
+                    this.$router.replace("/admin/goods-list");
                 }, 1000)
             }
         })
@@ -254,19 +251,19 @@ export default {
       }
       return isLt2M;
     },
-    // 移除选中的图片
+    // 移除选中的图片,fileList是删除后的数据
     handleRemove(file, fileList) {
-      // console.log(file, fileList);
-      if(fileList.length===0){
+
+      if(fileList.length === 0){
         this.$message({
-          type:"warning",
-          message:"至少保留一张图片"
-        })
+          type: "warning",
+          message: "至少保留一张图片"
+        });
+        return;
       }
 
-
       // 在编辑时候如果只有一张图片后台没法删除,至少保留一张图片
-      this.form.fileList=fileList;
+      this.form.fileList = fileList
     },
     // 点击预览图片
     handlePictureCardPreview(file) {

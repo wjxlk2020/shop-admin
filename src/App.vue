@@ -1,44 +1,40 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+      <router-view></router-view>
   </div>
 </template>
 
 <script>
 
-
-// //导入axios
-// import axios from "axios"
-
 export default {
   name: 'app',
-  //生命周期：页面加载完，在执行
- mounted(){
+
+  mounted(){
     // 请求是否登录的接口
-    this.$axios(
-      {
+    this.$axios({
         url: "/admin/account/islogin",
-        withCredentials: true
-      } ).then(res => {
+      }).then(res => {
       if(res.data.code === "nologin"){
+        // 因为接口永远都是返回nologin，先注释
         // this.$router.push("/login");
       }
     })
-  },
-  
- 
+  }
 }
 </script>
 
-<style lang="less">
-  *{
-    margin: 0;
-    padding: 0;
-  }
-  .mt20{
-    margin-top: 20px;
-  }
-  .mb20{
-    margin-bottom: 20px;
-  }
+<style>
+
+*{
+  margin:0;
+  padding:0;
+}
+
+.mt20{
+  margin-top:20px;
+}
+
+.mb20{
+  margin-bottom: 20px;
+}
 </style>
