@@ -1,5 +1,5 @@
 <template>
-   <div>
+  <div>
     <el-form ref="form" :model="form" label-width="80px">
       <el-form-item label="所属类别">
         <el-cascader :options="data" :show-all-levels="false" @change="handleChange"></el-cascader>
@@ -41,39 +41,27 @@ export default {
     };
   },
 
- methods: {
-   handleChange(data){
-       // 选中分类的id数据
-      this.form.category_id = data[data.length -1];
-   },
 
-   onSubmit(){
-       this.$axios({
-           method: "POST",
-           url: `/admin/category/add/goods`,
-           data: this.form,
-           // 处理跨域
-             withCredentials: true,
-       }).then(res =>{
-           console.log(res)
-           const { status, message } = res.data;
+  methods: {
+      handleChange(data){
+          // 选中分类的id数据
+         this.form.category_id = data[data.length -1];
+      },
 
-          if(status == 0){
-                this.$message({
-                    message: message,
-                    type: 'success'
-                });
-
-                setTimeout(() => {
-                    this.$router.replace("/admin/cacategory-list")
-                }, 1000)
-            }
-       })
-   }
+      onSubmit(){
+          this.$axios({
+              method: "POST",
+              url: `/admin/category/add/goods`,
+              data: this.form,
+              // 处理跨域
+                withCredentials: true,
+          }).then(res =>{
+              console.log(res)
+          })
+      }
   },
 
-
-mounted() {
+  mounted() {
 
     this.$axios({
       url: "/admin/category/getlist/goods"
@@ -128,10 +116,8 @@ mounted() {
       this.data = arr;
     });
   }
-
-}
+};
 </script>
 
 <style>
-
 </style>

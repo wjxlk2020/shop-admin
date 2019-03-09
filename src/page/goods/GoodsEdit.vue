@@ -179,7 +179,7 @@ export default {
       //预览图片
       this.imageUrl=message.imgList[0].url;
 
-      this.from.fileList=message.fileList.map(v=>{
+      this.form.fileList=message.fileList.map(v=>{
         return {
           ...v,
           //覆盖v对象里面的url

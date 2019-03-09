@@ -34,13 +34,13 @@
   </div>
 </template>
 
+
+
 <script>
 export default {
-   data() {
+  data() {
     return {
-      data: [
-         
-      ]
+      data: []
     };
   },
 
@@ -50,10 +50,10 @@ export default {
     }).then(res => {
       let { message } = res.data;
 
-    // 重新排序
+      // 重新排序
       message = message.sort((a, b) => {
-          // 如果a的category_id大于B的，那么b数据就排到a的前面
-          return a.category_id - b.category_id;
+        // 如果a的category_id大于B的，那么b数据就排到a的前面
+        return a.category_id - b.category_id;
       });
 
       // 最终的结果的数组
@@ -77,6 +77,10 @@ export default {
               id: item.category_id,
               label: item.title
             });
+            //递归中也需要排序
+            v.children = v.children.sort((a,b) => {
+              return a.sort_id - b.sort_id
+            })
             return;
           }
 
@@ -107,21 +111,21 @@ export default {
 
   methods: {
     edit(data) {
-      console.log();
+      // 跳转到编辑页
+      this.$router.push(`/admin/category-edit/${data.category_id}`);
     },
-    //修改排序触发事件
-    handleEnter(data){
-      //修改排序
+
+    // 修改排序回车时候触发的事件
+    handleEnter(data) {
+      // 修改排序
       this.$axios({
-        method:"POST",
-        url:`/admin/category/edit/${data.category_id}`,
+        method: "POST",
+        url: `/admin/category/edit/${data.category_id}`,
         data,
         // 处理跨域
         withCredentials: true
-      }).then(res=>{
+      }).then(res => {
         const { status, message } = res.data;
-        console.log(res);
-        
         if (status == 0) {
           this.$message({
             type: "success",
@@ -131,8 +135,8 @@ export default {
       });
     },
 
-    //跳转到新增栏目页
-    handleCategoryAdd(){
+    // 跳转到新增栏目页
+    handleCategoryAdd() {
       this.$router.push("/admin/category-add");
     }
   }
@@ -148,15 +152,15 @@ export default {
   font-size: 14px;
   padding-right: 8px;
 }
-.tree-header{
-  background-color: #fff;
-  padding: 10px;
-}
-.category .el-input--mini .el-input__inner{
+
+.category .el-input--mini .el-input__inner {
   width: 80px;
-  height: 18px ;
-  line-height: 18px ;
-  
+  height: 18px !important;
+  line-height: 18px !important;
 }
 
+.tree-header {
+  background: #fff;
+  padding: 10px;
+}
 </style>
