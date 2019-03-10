@@ -10,9 +10,9 @@ export default {
   // 初始化数据
   state: {
     // 用户名
-    username: "",
+    username: localStorage.getItem("username") || "",
     // 身份信息
-    identity: ""
+    identity: localStorage.getItem("identity") || ""
   },
 
   // 异步修改数据
@@ -20,10 +20,9 @@ export default {
 
     // login是命令，对应的函数就是操作函数
     // {commit, state} = 第一个对象参数解构出来的属性
-    login({
-      commit,
-      state
-    }, data) {
+    login({commit,state}, data) {
+
+      return new Promise((resolve,reject)=>{     
       axios({
         url: "/admin/account/login",
         method: "POST",
@@ -45,9 +44,33 @@ export default {
           state.username = message.uname;
           state.identity = message.realname;
 
-          window.history.back();
-        }
+          //把用户信息保存到本地存储
+          localStorage.setItem("username", message.uname);
+          localStorage.setItem("identity", message.realname);
+          // window.history.back();
+          resolve();
+         }
+        })
       })
+    },
+
+    logout({state},fn){
+      //调用退出的接口
+     axios({
+       url: "/admin/account/logout",
+       withCredentials: true,
+     }).then(res=>{
+        const {status,message}=res.data;
+        if(status==0){
+          state.username = "";
+          state.identity = "";
+
+          //把用户信息保存到本地存储
+          localStorage.removeItem("username");
+          localStorage.removeItem("identity");
+          fn();
+        }
+     })
     }
 
   }

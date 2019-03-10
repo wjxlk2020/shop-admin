@@ -10,37 +10,55 @@
         </el-input>
       </div>
     </el-row>
-<el-row type="flex" justify="space-between" align="middle">
+
+
     <!-- 表格 -->
     <!-- data用于接收表格数据，tableData是data中的数据，由后台返回的 -->
     <el-table :data="tableData" style="width: 100%;" class="mt20" @selection-change="handleSelectionChange">
-      
+
       <!-- 表格的多选 -->
       <el-table-column type="selection" width="55"></el-table-column>
-    
+
       <!-- 每一列的数据, prop定义数据结构对象要显示的属性 -->
-      <el-table-column label="姓名" width="260">
-        
+      <el-table-column label="姓名" >
+         <!-- 标题自定义模板 -->
+        <template slot-scope="scope">
+          <el-row type="flex" align="middle" >  
+            <span>{{scope.row.user_name}}</span>
+          </el-row>
+        </template>
       </el-table-column>
 
-      <el-table-column label="手机号码" width="180" prop="categoryname"></el-table-column>
-
-      <el-table-column label="邮箱" width="180">
-        
+      <el-table-column label="手机号码" >
+        <!-- 自定义模板, slot-scope属性可以获取当前每一行数据，数据是一个对象，scoped.row可获取该对象-->
+        <template slot-scope="scope">
+          <span>{{scope.row.mobile}}</span>
+        </template>
       </el-table-column>
 
-      <el-table-column label="时间" width="180" prop="categoryname"></el-table-column>
+      <el-table-column label="邮箱" >
+        <!-- 自定义模板, slot-scope属性可以获取当前每一行数据，数据是一个对象，scoped.row可获取该对象-->
+        <template slot-scope="scope">
+          <span>{{scope.row.email}}</span>
+        </template>
+      </el-table-column>
 
+      <el-table-column label="时间" >
+        <!-- 自定义模板, slot-scope属性可以获取当前每一行数据，数据是一个对象，scoped.row可获取该对象-->
+        <template slot-scope="scope">
+          <span>{{scope.row.reg_time}}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">查看</el-button> 
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">查看</el-button>
         </template>
       </el-table-column>
-     
-     
     </el-table>
-</el-row>
+
+
+
     <!-- 分页组件 -->
     <!-- size-change: 切换页面数据显示条数的时候触发 -->
     <!-- current-change： 切换页面时候触发 -->
@@ -89,11 +107,13 @@ export default {
       // 请求商品类别数据
       this.$axios
         .get(
-          `http://localhost:8899/admin/goods/getlist?pageIndex=${
+          `http://localhost:8899/admin/account/getlist?pageIndex=${
             this.pageIndex
           }&pageSize=${this.pageSize}&searchvalue=${this.searchValue}`
         )
         .then(res => {
+          console.log(res);
+          
           // 获取返回的数据
           const { data } = res;
           // 表格的数据
@@ -106,7 +126,7 @@ export default {
     handleEdit(index, row) {
       console.log(index, row);
       //row.id就是当前编辑商品的id
-      this.$router.push(`/admin/goods-edit/${row.id}`)
+      this.$router.push(`/admin/account-see/${row.id}`)
     },
 
     // 切换显示条数时候触发
@@ -139,30 +159,6 @@ export default {
       this.idsStr = idsStr;
     },
 
-    // 删除商品时候触发
-    handleDelete(ids){
-      // 删除的操作
-      this.$axios.get(`http://localhost:8899/admin/goods/del/${ids}`).then(res => {
-        const {message, status} = res.data;
-
-        // 删除成功
-        if(status == 0){
-          this.$message({
-            message: message,
-            type: 'success'
-          });
-
-          // 重新请求数据
-          this.getList();
-        }
-      })
-    },
-
-    // 跳转到新增商品
-    handleToGoodsAdd(){
-      this.$router.push("/admin/goods-add");
-    },
-
     // 点击搜索按钮时候触发
     handleSearch(){
       // 把当前页面重置为1
@@ -182,11 +178,12 @@ export default {
 </script>
 
 <style scoped>
-.goods-img{
-  width: 64px;
-  height: 64px;
-  display: block;
-  margin-right: 10px;
-  flex-shrink: 0;
-}
+
+	.el-table{
+		margin-bottom:20px;
+	}
+
+  
+  
+	
 </style>

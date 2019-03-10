@@ -26,6 +26,7 @@ import CategoryEdit from "./page/category/CategoryEdit"
 
 
 import AccountList from "./page/account/AccountList"
+import AccountSee from "./page/account/AccountSee"
 
 import OrderList from "./page/order/OrderList"
 //富文本编辑器(全局的)
@@ -60,6 +61,7 @@ const routes =[
     {path:"goods-edit/:id",component:GoodsEdit,meta:"编辑商品"},
 
     {path:"account-list",component:AccountList,meta:"会员列表"},
+    {path:"account-see/:id",component:AccountSee,meta:"查看列表"},
 
     {path:"order-list",component:OrderList,meta:"订单列表"},
 

@@ -48,7 +48,17 @@
           // })
 
           // user/是命名空间
-          this.$store.dispatch("user/login", this.formData);
+          this.$store.dispatch("user/login", this.formData).then(()=>{
+            
+            this.$message({
+            message: "恭喜你，登陆成功",
+            type: "success"
+            });
+               // this.$router.push("/login")
+             setTimeout(()=>{
+                 this.$router.back();
+             },1000)
+             });
 
       },
       resetForm(formName) {

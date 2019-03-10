@@ -1,9 +1,5 @@
 <template>
-      <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
-    <el-radio-button :label="false">展开</el-radio-button>
-    <el-radio-button :label="true">收起</el-radio-button>
-  </el-radio-group> -->
-
+    
   <!-- default-active:当前激活菜单的 index -->
   <!-- class:自定义classname -->
   <!-- collapse:控制菜单的展开收起，false是展开，true是收起 -->
@@ -12,8 +8,8 @@
     class="el-menu-vertical-demo"
     :collapse="isCollapse"
     background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b"
+    text-color="#fff"
+    active-text-color="#ffd04b"
   >
    <!-- 子菜单 -->
  <el-submenu v-for="(item,index) in menus" :key="index" :index="`${index+1}`">
