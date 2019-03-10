@@ -1,50 +1,83 @@
 <template>
   <div>
-    <!-- 顶部的工具栏 -->
-    <el-row type="flex" justify="space-between" align="middle">
-      <div>
-        
-      </div>
+    <div class="form-control">
+			<div>
+				<!-- <el-button @click="toggleSelection()">全选</el-button> -->
+				<!-- <router-link to="order-add"><el-button>新增</el-button></router-link> -->
+				<!-- <el-button @click="handleDelete(selectedRows)">删除订单</el-button> -->
+			</div>
 
-      <!-- 搜索框 -->
-      <div>
-        <el-input placeholder="请输入内容" class="input-with-select" v-model="searchValue">
-          <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
-        </el-input>
-      </div>
-    </el-row>
+			<el-row style="width:100%;" type="flex" justify="end">
+				<el-col :span="6">
+					<el-select v-model="statusValue" placeholder="请选择" @change="handleStatus">
+						<el-option
+						v-for="item in options"
+						:key="item.value"
+						:label="item.label"
+						:value="item.value">
+						</el-option>
+					</el-select>
+				</el-col>
+				<el-col :span="6">
+					<el-input placeholder="会员名称" v-model="searchvalue" class="input-with-select">
+						<el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
+					</el-input>
+				</el-col>
+			</el-row>
+		</div>
 
     <!-- 表格 -->
     <!-- data用于接收表格数据，tableData是data中的数据，由后台返回的 -->
-    <el-table :data="tableData" style="width: 100%;" class="mt20" @selection-change="handleSelectionChange">
-
+    <el-table
+      :data="tableData"
+      style="width: 100%;"
+      class="mt20"
+      @selection-change="handleSelectionChange"
+    >
       <!-- 表格的多选 -->
       <el-table-column type="selection" width="55"></el-table-column>
 
       <!-- 每一列的数据, prop定义数据结构对象要显示的属性 -->
-      <el-table-column label="标题" width="260">
-         <!-- 标题自定义模板 -->
+      <el-table-column label="订单Id" >
+        <!-- 标题自定义模板 -->
         <template slot-scope="scope">
-          <el-row type="flex" align="middle" >  
-            <img :src="scope.row.imgurl" class="goods-img" >
-            <p>{{scope.row.title}}</p>
+          <el-row type="flex" align="middle">
+            <span>{{scope.row.id}}</span>
           </el-row>
         </template>
       </el-table-column>
 
-      <el-table-column label="类型" width="180" prop="categoryname"></el-table-column>
+      <el-table-column label="会员名称" prop="categoryname">
+        <template slot-scope="scope">
+           <span>{{scope.row.user_name}}</span>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="价格" width="180">
+      <el-table-column label="地址">
         <!-- 自定义模板, slot-scope属性可以获取当前每一行数据，数据是一个对象，scoped.row可获取该对象-->
         <template slot-scope="scope">
-          <span>{{scope.row.market_price | tofixed}}</span>
+          <span>{{scope.row.area}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="快递" prop="categoryname">
+        <template slot-scope="scope">
+           <span>{{scope.row.expressTitle}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="状态" prop="categoryname">
+        <template slot-scope="scope">
+           <span>{{scope.row.statusName}}</span>
         </template>
       </el-table-column>
 
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
+          <router-link :to="`order-detail/${scope.row.id}`">
+            <el-button size="mini" type="danger">查看</el-button>
+          </router-link>
         </template>
       </el-table-column>
     </el-table>
@@ -77,13 +110,39 @@ export default {
       pageIndex: 1,
       // 当前显示的条数
       pageSize: 5,
+      orderstatus:"",
+
       // 搜索条件
       searchValue: "",
       // 数据总条数
       totalCount: 0,
 
       // 保存要删除的商品
-      idsStr: ""
+      idsStr: "",
+      //
+      statusName:"",
+      //
+      options:  [{
+					value: 0,
+					label: '全部'
+				},
+				{
+					value: 1,
+					label: '待付款'
+				}, {
+					value: 2,
+					label: '已付款'
+				}, {
+					value: 3,
+					label: '已发货'
+				}, {
+					value: 4,
+					label: '已签收'
+				}, {
+					value: 5,
+					label: '取消'
+				}],
+				statusValue: ""
     };
   },
 
@@ -93,15 +152,18 @@ export default {
   },
 
   methods: {
-    getList(){
+    getList() {
       // 请求商品类别数据
       this.$axios
         .get(
-          `http://localhost:8899/admin/goods/getlist?pageIndex=${
+          `http://localhost:8899/admin/order/getorderlist?pageIndex=${
             this.pageIndex
-          }&pageSize=${this.pageSize}&searchvalue=${this.searchValue}`
+          }&pageSize=${this.pageSize}&searchvalue=${this.searchValue}
+          &statusName=${this.statusName}&orderstatus=${this.orderstatus}`
         )
         .then(res => {
+          console.log(res);
+          
           // 获取返回的数据
           const { data } = res;
           // 表格的数据
@@ -114,13 +176,13 @@ export default {
     handleEdit(index, row) {
       console.log(index, row);
       //row.id就是当前编辑商品的id
-      this.$router.push(`/admin/goods-edit/${row.id}`)
+      this.$router.push(`/admin/order-edit/${row.id}`);
     },
 
     // 切换显示条数时候触发
     handleSizeChange(num) {
       // console.log(num);
-      
+
       this.pageSize = num;
       this.getList();
     },
@@ -134,11 +196,11 @@ export default {
     },
 
     // 当表格选择时候触发
-    handleSelectionChange(data){
+    handleSelectionChange(data) {
       // data是一个数组，当前选中商品
       const ids = data.map(v => {
-        return v.id
-      })
+        return v.id;
+      });
 
       // 拼接选中商品的id
       const idsStr = ids.join(",");
@@ -148,31 +210,30 @@ export default {
     },
 
     // 删除商品时候触发
-    handleDelete(ids){
+    handleDetail(ids) {
       // 删除的操作
-      this.$axios.get(`http://localhost:8899/admin/goods/del/${ids}`).then(res => {
-        const {message, status} = res.data;
+      this.$axios
+        .get(`http://localhost:8899 /admin/order/getorderdetial/${ids}`)
+        .then(res => {
+          const { message, status } = res.data;
+          console.log(message);
+          
 
-        // 删除成功
-        if(status == 0){
-          this.$message({
-            message: message,
-            type: 'success'
-          });
-
-          // 重新请求数据
-          this.getList();
-        }
-      })
+          
+          
+        });
     },
 
-    // 跳转到新增商品
-    handleToGoodsAdd(){
-      this.$router.push("/admin/goods-add");
+
+    //切换状态
+    handleStatus(val){
+      this.orderstatus = val;
+      // 重新请求数据
+      this.getList();
     },
 
     // 点击搜索按钮时候触发
-    handleSearch(){
+    handleSearch() {
       // 把当前页面重置为1
       this.pageIndex = 1;
       // 重新请求数据
@@ -180,17 +241,11 @@ export default {
     }
   },
 
-  // 过滤器
-  filters: {
-    tofixed: function(data) {
-      return Number(data).toFixed(2);
-    }
-  }
 };
 </script>
 
 <style scoped>
-.goods-img{
+.goods-img {
   width: 64px;
   height: 64px;
   display: block;
@@ -198,3 +253,4 @@ export default {
   flex-shrink: 0;
 }
 </style>
+

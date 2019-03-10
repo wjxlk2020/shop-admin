@@ -29,6 +29,8 @@ import AccountList from "./page/account/AccountList"
 import AccountSee from "./page/account/AccountSee"
 
 import OrderList from "./page/order/OrderList"
+import OrderEdit from "./page/order/OrderEdit"
+import OrderDetail from "./page/order/OrderDetail"
 //富文本编辑器(全局的)
 // import VueQuillEditor from 'vue-quill-editor'
 // // require styles
@@ -64,6 +66,8 @@ const routes =[
     {path:"account-see/:id",component:AccountSee,meta:"查看列表"},
 
     {path:"order-list",component:OrderList,meta:"订单列表"},
+    {path:"order-edit/:id",component:OrderEdit,meta:"编辑订单"},
+    {path:"order-detail/:id",component:OrderDetail,meta:"查看详情"},
 
     { path: "cacategory-list", component: CategoryList, meta: "商品栏目" },
     { path: "category-add", component: CategoryAdd, meta: "新增栏目" },
